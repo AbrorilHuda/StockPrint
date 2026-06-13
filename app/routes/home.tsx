@@ -25,6 +25,7 @@ export default function Home() {
   const [rawText, setRawText] = useState("");
   const [isLoaded, setIsLoaded] = useState(false);
   const [showToast, setShowToast] = useState<string | null>(null);
+  const [isSettingsExpanded, setIsSettingsExpanded] = useState(false);
 
   useEffect(() => {
     const saved = getSavedStockData();
@@ -85,7 +86,7 @@ export default function Home() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-slate-950 text-slate-100 pb-16">
+    <div className="relative min-h-screen overflow-x-hidden bg-slate-950 text-slate-100 pb-28 lg:pb-16">
       {/* Background Glow Blobs */}
       <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-900/20 glow-blob" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-violet-900/20 glow-blob" />
@@ -189,81 +190,159 @@ export default function Home() {
 
           {/* Form Settings Sidebar (Right Panel) */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="glass-panel rounded-3xl p-6 space-y-5">
-              <h2 className="font-bold text-slate-200 border-b border-slate-900/60 pb-3">
+            <div className="glass-panel rounded-3xl p-6 transition-all duration-300">
+              
+              {/* Mobile Clickable Header */}
+              <button
+                type="button"
+                onClick={() => setIsSettingsExpanded(!isSettingsExpanded)}
+                className="lg:hidden w-full flex items-center justify-between font-bold text-slate-200 border-b border-slate-900/40 pb-3 text-left focus:outline-none cursor-pointer group"
+              >
+                <div className="flex flex-col min-w-0">
+                  <span className="flex items-center gap-2 text-sm sm:text-base">
+                    <span>⚙️ Pengaturan Lembar Cetak</span>
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold border ${
+                      isSettingsExpanded 
+                        ? 'bg-indigo-950/80 text-indigo-300 border-indigo-800/40' 
+                        : 'bg-slate-900 text-slate-400 border-transparent'
+                    }`}>
+                      {isSettingsExpanded ? 'Tutup' : 'Ubah'}
+                    </span>
+                  </span>
+                  {!isSettingsExpanded && (
+                    <span className="text-[11px] text-slate-400 font-normal mt-1.5 truncate max-w-[280px]">
+                      {formData.title} • {formData.cabinetName} • {formData.date ? formData.date.split('-').reverse().join('/') : ''}
+                    </span>
+                  )}
+                </div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`w-5 h-5 text-slate-400 group-hover:text-slate-200 transition-transform duration-200 ${isSettingsExpanded ? 'rotate-180' : ''}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {/* Desktop Header */}
+              <h2 className="hidden lg:block font-bold text-slate-200 border-b border-slate-900/60 pb-3">
                 ⚙️ Pengaturan Lembar Cetak
               </h2>
 
-              {/* Title Setting */}
-              <div className="space-y-2">
-                <label htmlFor="title-input" className="block text-xs font-bold uppercase tracking-wider text-slate-400">
-                  Judul Dokumen
-                </label>
-                <input
-                  id="title-input"
-                  type="text"
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="Contoh: FORM CETAK STOK BARANG"
-                  className="w-full glass-input px-4 py-2.5 text-sm text-slate-100"
-                />
-              </div>
+              {/* Collapsible content area */}
+              <div className={`accordion-content overflow-hidden lg:overflow-visible space-y-5 ${
+                isSettingsExpanded 
+                  ? 'max-h-[500px] opacity-100 mt-4' 
+                  : 'max-h-0 opacity-0 lg:max-h-none lg:opacity-100 lg:mt-0'
+              }`}>
+                {/* Title Setting */}
+                <div className="space-y-2">
+                  <label htmlFor="title-input" className="block text-xs font-bold uppercase tracking-wider text-slate-400">
+                    Judul Dokumen
+                  </label>
+                  <input
+                    id="title-input"
+                    type="text"
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    placeholder="Contoh: FORM CETAK STOK BARANG"
+                    className="w-full glass-input px-4 py-2.5 text-sm text-slate-100"
+                  />
+                </div>
 
-              {/* Cabinet Setting */}
-              <div className="space-y-2">
-                <label htmlFor="cabinet-input" className="block text-xs font-bold uppercase tracking-wider text-slate-400">
-                  Nama Etalase / Rak / Lokasi
-                </label>
-                <input
-                  id="cabinet-input"
-                  type="text"
-                  value={formData.cabinetName}
-                  onChange={(e) => setFormData({ ...formData, cabinetName: e.target.value })}
-                  placeholder="Contoh: Etalase Depan"
-                  className="w-full glass-input px-4 py-2.5 text-sm text-slate-100"
-                />
-              </div>
+                {/* Cabinet Setting */}
+                <div className="space-y-2">
+                  <label htmlFor="cabinet-input" className="block text-xs font-bold uppercase tracking-wider text-slate-400">
+                    Nama Etalase / Rak / Lokasi
+                  </label>
+                  <input
+                    id="cabinet-input"
+                    type="text"
+                    value={formData.cabinetName}
+                    onChange={(e) => setFormData({ ...formData, cabinetName: e.target.value })}
+                    placeholder="Contoh: Etalase Depan"
+                    className="w-full glass-input px-4 py-2.5 text-sm text-slate-100"
+                  />
+                </div>
 
-              {/* Date Setting */}
-              <div className="space-y-2">
-                <label htmlFor="date-input" className="block text-xs font-bold uppercase tracking-wider text-slate-400">
-                  Tanggal Cetak
-                </label>
-                <input
-                  id="date-input"
-                  type="date"
-                  value={formData.date}
-                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                  className="w-full glass-input px-4 py-2.5 text-sm text-slate-100 text-left"
-                />
+                {/* Date Setting */}
+                <div className="space-y-2">
+                  <label htmlFor="date-input" className="block text-xs font-bold uppercase tracking-wider text-slate-400">
+                    Tanggal Cetak
+                  </label>
+                  <input
+                    id="date-input"
+                    type="date"
+                    value={formData.date}
+                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                    className="w-full glass-input px-4 py-2.5 text-sm text-slate-100 text-left"
+                  />
+                </div>
               </div>
             </div>
 
-            {/* Giant Submit Button */}
-            <button
-              type="submit"
-              disabled={lineCount === 0}
-              className={`w-full py-4 rounded-3xl font-extrabold text-sm tracking-wide uppercase transition-all duration-300 shadow-xl flex items-center justify-center gap-3 active:scale-[0.98] cursor-pointer ${
-                lineCount > 0
-                  ? "bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white shadow-indigo-950/40 hover:shadow-indigo-900/30"
-                  : "bg-slate-900 border border-slate-800 text-slate-500 cursor-not-allowed"
-              }`}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-5 h-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+            {/* Giant Submit Button - Desktop ONLY */}
+            <div className="hidden lg:block">
+              <button
+                type="submit"
+                disabled={lineCount === 0}
+                className={`w-full py-4 rounded-3xl font-extrabold text-sm tracking-wide uppercase transition-all duration-300 shadow-xl flex items-center justify-center gap-3 active:scale-[0.98] cursor-pointer ${
+                  lineCount > 0
+                    ? "bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white shadow-indigo-950/40 hover:shadow-indigo-900/30"
+                    : "bg-slate-900 border border-slate-800 text-slate-500 cursor-not-allowed"
+                }`}
               >
-                <polyline points="9 11 12 14 22 4" />
-                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
-              </svg>
-              Generate & Preview Form
-            </button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-5 h-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="9 11 12 14 22 4" />
+                  <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                </svg>
+                Generate & Preview Form
+              </button>
+            </div>
+            {/* Sticky Bottom Action Bar - Mobile ONLY */}
+            <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-950/90 backdrop-blur-md border-t border-slate-900/80 p-4 shadow-2xl flex items-center justify-between gap-4">
+              <div className="flex flex-col min-w-0">
+                <span className="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Total Barang</span>
+                <span className="text-slate-200 font-mono text-sm sm:text-base font-bold flex items-center gap-1.5">
+                  <span className={`w-2 h-2 rounded-full ${lineCount > 0 ? "bg-emerald-400 animate-pulse" : "bg-amber-400"}`} />
+                  {lineCount} barang
+                </span>
+              </div>
+              <button
+                type="submit"
+                disabled={lineCount === 0}
+                className={`flex-1 py-3 px-5 sm:px-6 rounded-2xl font-extrabold text-xs tracking-wider uppercase transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.97] cursor-pointer ${
+                  lineCount > 0
+                    ? "bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-lg shadow-indigo-950/30"
+                    : "bg-slate-900 border border-slate-800 text-slate-500 cursor-not-allowed"
+                }`}
+              >
+                Generate ({lineCount})
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </button>
+            </div>
+
           </div>
 
         </form>

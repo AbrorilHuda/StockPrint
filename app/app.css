@@ -56,6 +56,25 @@ body {
   }
 }
 
+/* Accordion transition and utility classes for scale preview */
+.accordion-content {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.a4-scale-parent {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.a4-scale-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  width: 100%;
+  transform-origin: top center;
+}
+
 /* Print Overrides */
 @media print {
   @page {
@@ -106,6 +125,19 @@ body {
     background: #ffffff !important;
     color: #000000 !important;
     outline: none !important;
+    transform: none !important; /* Force reset scale during printing */
+  }
+
+  /* Scale overrides to ensure printer gets layout at native size */
+  .a4-scale-parent,
+  .a4-scale-wrapper {
+    height: auto !important;
+    width: 100% !important;
+    transform: none !important;
+    overflow: visible !important;
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   /* Print specific table styles to avoid broken lines and enforce sharp borders */
