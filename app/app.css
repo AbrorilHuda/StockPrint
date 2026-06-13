@@ -7,9 +7,135 @@
 
 html,
 body {
-  @apply bg-white dark:bg-gray-950;
+  @apply bg-slate-950 text-slate-100 min-h-screen antialiased;
+  font-family: var(--font-sans);
+}
 
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-slate-900/50;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-indigo-600/30 hover:bg-indigo-600/50 rounded-full transition-colors;
+}
+
+/* Glassmorphism Classes */
+.glass-panel {
+  @apply bg-slate-900/60 backdrop-blur-md border border-slate-800/80 shadow-xl;
+}
+
+.glass-input {
+  @apply bg-slate-950/50 border border-slate-800 focus:border-indigo-500/80 focus:ring-2 focus:ring-indigo-500/20 rounded-xl transition-all duration-200 outline-none;
+}
+
+/* Glowing background animations */
+.glow-blob {
+  filter: blur(120px);
+  pointer-events: none;
+}
+
+/* A4 Sheet Simulation for Screen */
+@media screen {
+  .a4-page {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 15mm 15mm 20mm 15mm;
+    margin: 2rem auto;
+    background: #ffffff;
+    color: #0c0a09; /* Tailwind stone-950 */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    box-sizing: border-box;
   }
 }
+
+/* Print Overrides */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm 12mm;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 11pt !important;
+  }
+
+  /* Hide everything not marked for print */
+  .no-print {
+    display: none !important;
+  }
+
+  /* Reset the container wrapper styles to render transparently */
+  .preview-page-container,
+  .print-workbench {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+    overflow: visible !important;
+    min-height: 0 !important;
+    height: auto !important;
+    width: 100% !important;
+    box-shadow: none !important;
+  }
+
+  /* Unset paper layout styling for direct rendering */
+  .a4-page {
+    width: 100% !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    outline: none !important;
+  }
+
+  /* Print specific table styles to avoid broken lines and enforce sharp borders */
+  table {
+    page-break-inside: auto;
+    width: 100% !important;
+    border-collapse: collapse !important;
+    border: 1.5px solid #000000 !important;
+    table-layout: fixed !important;
+  }
+  
+  th, td {
+    border: 1.5px solid #000000 !important;
+    color: #000000 !important;
+  }
+  
+  th {
+    background-color: #e5e7eb !important;
+    font-weight: 800 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+}
+
